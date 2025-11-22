@@ -7,7 +7,7 @@ interface ScannerGridProps {
 
 export const ScannerGrid: React.FC<ScannerGridProps> = ({ images }) => {
   const [scanPosition, setScanPosition] = useState(50); // Percentage
-  const requestRef = useRef<number>();
+  const requestRef = useRef<number | null>(null);
   const directionRef = useRef<number>(0.15); // Slower, smoother speed
 
   useEffect(() => {

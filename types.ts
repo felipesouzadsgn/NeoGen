@@ -1,3 +1,4 @@
+
 export interface ImageAsset {
   id: string;
   src: string;
@@ -11,5 +12,6 @@ export interface GeneratedImage {
 
 export enum AppState {
   LANDING = 'LANDING',
-  GENERATOR = 'GENERATOR'
+  GENERATOR = 'GENERATOR',
+  GALLERY = 'GALLERY'
 }

@@ -1,13 +1,14 @@
+
 import React from 'react';
 import { GlitchText } from './GlitchText';
 import { ScannerGrid } from './ScannerGrid';
 import { Header } from './Header';
 import { Footer } from './Footer';
-import { ImageAsset } from '../types';
+import { ImageAsset, AppState } from '../types';
 import { ArrowRight, Zap, Sliders, Download, Check } from 'lucide-react';
 
 interface LandingPageProps {
-  onStart: () => void;
+  onNavigate: (page: AppState) => void;
 }
 
 const DEMO_IMAGES: ImageAsset[] = [
@@ -38,11 +39,11 @@ const DEMO_IMAGES: ImageAsset[] = [
   }
 ];
 
-export const LandingPage: React.FC<LandingPageProps> = ({ onStart }) => {
+export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
   return (
     <div className="relative min-h-screen w-full overflow-x-hidden flex flex-col bg-background">
       
-      <Header onStart={onStart} />
+      <Header onNavigate={onNavigate} currentPage={AppState.LANDING} />
 
       {/* Cyberpunk Background Layers */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,#1a2e25_0%,#020204_60%)] pointer-events-none"></div>
@@ -77,7 +78,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStart }) => {
              <div className="absolute top-1/2 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-primary/20 to-transparent -z-10"></div>
 
              <button
-              onClick={onStart}
+              onClick={() => onNavigate(AppState.GENERATOR)}
               className="group relative inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-[#0a0a0a] border border-primary/50 rounded-full text-white font-medium transition-all duration-300 hover:border-primary hover:shadow-[0_0_20px_rgba(20,241,149,0.4)] active:scale-95"
             >
               <span className="relative z-10 tracking-wide">Generate image</span>
@@ -102,8 +103,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStart }) => {
                <Zap className="w-6 h-6 text-primary" />
             </div>
             <h3 className="text-lg font-bold text-white tracking-wide">Lightning-Fast<br/>Image Generation</h3>
-            <p className="text-sm text-gray-500 leading-relaxed max-w-xs">
-              Type what you imagine, hit enter, and watch AI bring it to life in moments.
+            <p className="text-sm text-gray-400 leading-relaxed max-w-sm">
+              Experience real-time creativity powered by the latest generative models. Generate complex, high-fidelity scenes in mere seconds, eliminating the wait between your imagination and the screen. Perfect for rapid prototyping and instant inspiration.
             </p>
           </div>
 
@@ -112,8 +113,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStart }) => {
                <Sliders className="w-6 h-6 text-primary" />
             </div>
             <h3 className="text-lg font-bold text-white tracking-wide">Multiple Styles &<br/>Customization</h3>
-            <p className="text-sm text-gray-500 leading-relaxed max-w-xs">
-              Pick a style and fine-tune details like color, lighting, and mood.
+            <p className="text-sm text-gray-400 leading-relaxed max-w-sm">
+              Transcending boundaries between art styles. Whether you need photorealistic product shots, stylized anime characters, or gritty cyberpunk environments, simply describe your vibe. Control lighting, composition, and mood with precision.
             </p>
           </div>
 
@@ -122,8 +123,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStart }) => {
                <Download className="w-6 h-6 text-primary" />
             </div>
             <h3 className="text-lg font-bold text-white tracking-wide">High-Resolution<br/>Downloads</h3>
-            <p className="text-sm text-gray-500 leading-relaxed max-w-xs">
-              Export your creations in high-quality resolution for print, web, or social media.
+            <p className="text-sm text-gray-400 leading-relaxed max-w-sm">
+              Quality that holds up on any screen. Export your masterpieces in stunning high definition, ready for professional use. From social media feeds to large-format print materials, your visuals remain sharp, detailed, and artifact-free.
             </p>
           </div>
 
@@ -167,7 +168,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStart }) => {
               </ul>
               
               <button 
-                onClick={onStart}
+                onClick={() => onNavigate(AppState.GENERATOR)}
                 className="w-full py-3 rounded-xl border border-gray-700 text-white font-medium hover:bg-gray-800 transition-colors"
               >
                 Start Creating

@@ -1,11 +1,14 @@
+
 import React, { useState, useEffect } from 'react';
 import { Zap, Menu, X } from 'lucide-react';
+import { AppState } from '../types';
 
 interface HeaderProps {
-  onStart: () => void;
+  onNavigate: (page: AppState) => void;
+  currentPage: AppState;
 }
 
-export const Header: React.FC<HeaderProps> = ({ onStart }) => {
+export const Header: React.FC<HeaderProps> = ({ onNavigate, currentPage }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -17,11 +20,20 @@ export const Header: React.FC<HeaderProps> = ({ onStart }) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const scrollToSection = (id: string) => {
+  const handleNavClick = (sectionId: string) => {
     setIsMobileMenuOpen(false);
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+    if (currentPage !== AppState.LANDING) {
+      onNavigate(AppState.LANDING);
+      // Allow time for transition if needed, but for now just switch view
+      setTimeout(() => {
+        const element = document.getElementById(sectionId);
+        if (element) element.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    } else {
+      const element = document.getElementById(sectionId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
     }
   };
 
@@ -38,7 +50,10 @@ export const Header: React.FC<HeaderProps> = ({ onStart }) => {
       }`}>
         <div className="flex items-center justify-between">
             {/* Logo */}
-            <div className="flex items-center gap-2 cursor-pointer group" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+            <div 
+              className="flex items-center gap-2 cursor-pointer group" 
+              onClick={() => onNavigate(AppState.LANDING)}
+            >
                 <div className="w-8 h-8 rounded bg-primary flex items-center justify-center group-hover:shadow-[0_0_15px_rgba(20,241,149,0.5)] transition-shadow">
                     <Zap className="w-5 h-5 text-black fill-current" />
                 </div>
@@ -47,16 +62,22 @@ export const Header: React.FC<HeaderProps> = ({ onStart }) => {
 
             {/* Desktop Nav */}
             <nav className="hidden md:flex items-center gap-8">
-                <button onClick={() => scrollToSection('showcase')} className="text-sm font-medium text-gray-300 hover:text-primary transition-colors">Showcase</button>
-                <button onClick={() => scrollToSection('features')} className="text-sm font-medium text-gray-300 hover:text-primary transition-colors">Features</button>
-                <button onClick={() => scrollToSection('pricing')} className="text-sm font-medium text-gray-300 hover:text-primary transition-colors">Pricing</button>
+                <button onClick={() => handleNavClick('showcase')} className="text-sm font-medium text-gray-300 hover:text-primary transition-colors">Showcase</button>
+                <button 
+                  onClick={() => onNavigate(AppState.GALLERY)} 
+                  className={`text-sm font-medium transition-colors ${currentPage === AppState.GALLERY ? 'text-primary' : 'text-gray-300 hover:text-primary'}`}
+                >
+                  Gallery
+                </button>
+                <button onClick={() => handleNavClick('features')} className="text-sm font-medium text-gray-300 hover:text-primary transition-colors">Features</button>
+                <button onClick={() => handleNavClick('pricing')} className="text-sm font-medium text-gray-300 hover:text-primary transition-colors">Pricing</button>
             </nav>
 
             {/* CTA */}
             <div className="hidden md:flex items-center gap-4">
-                 <button onClick={onStart} className="text-sm font-medium text-white hover:text-primary transition-colors">Sign In</button>
+                 <button onClick={() => onNavigate(AppState.GENERATOR)} className="text-sm font-medium text-white hover:text-primary transition-colors">Sign In</button>
                  <button 
-                    onClick={onStart}
+                    onClick={() => onNavigate(AppState.GENERATOR)}
                     className="bg-white text-black px-5 py-2 rounded-full text-sm font-bold hover:bg-primary hover:scale-105 transition-all"
                  >
                     Get Started
@@ -75,11 +96,20 @@ export const Header: React.FC<HeaderProps> = ({ onStart }) => {
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
             <div className="md:hidden mt-4 pt-4 border-t border-white/10 flex flex-col space-y-4 animate-in slide-in-from-top-5 fade-in duration-200">
-                 <button onClick={() => scrollToSection('showcase')} className="text-left text-gray-300 hover:text-primary py-2">Showcase</button>
-                <button onClick={() => scrollToSection('features')} className="text-left text-gray-300 hover:text-primary py-2">Features</button>
-                <button onClick={() => scrollToSection('pricing')} className="text-left text-gray-300 hover:text-primary py-2">Pricing</button>
+                 <button onClick={() => handleNavClick('showcase')} className="text-left text-gray-300 hover:text-primary py-2">Showcase</button>
+                 <button 
+                   onClick={() => {
+                     onNavigate(AppState.GALLERY);
+                     setIsMobileMenuOpen(false);
+                   }} 
+                   className={`text-left py-2 ${currentPage === AppState.GALLERY ? 'text-primary' : 'text-gray-300 hover:text-primary'}`}
+                 >
+                   Gallery
+                 </button>
+                <button onClick={() => handleNavClick('features')} className="text-left text-gray-300 hover:text-primary py-2">Features</button>
+                <button onClick={() => handleNavClick('pricing')} className="text-left text-gray-300 hover:text-primary py-2">Pricing</button>
                 <div className="pt-2">
-                  <button onClick={onStart} className="w-full bg-primary text-black py-3 rounded-xl font-bold hover:bg-primary-dim transition-colors">Get Started</button>
+                  <button onClick={() => { onNavigate(AppState.GENERATOR); setIsMobileMenuOpen(false); }} className="w-full bg-primary text-black py-3 rounded-xl font-bold hover:bg-primary-dim transition-colors">Get Started</button>
                 </div>
             </div>
         )}
